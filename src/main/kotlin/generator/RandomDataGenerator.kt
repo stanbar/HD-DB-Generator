@@ -3,9 +3,12 @@ package generator
 import java.util.*
 import java.util.concurrent.ThreadLocalRandom
 
+
+fun Array<String>.random() = this[ThreadLocalRandom.current().nextInt(size)].capitalize()
+fun Date.random(from: Date, to: Date) = Date(ThreadLocalRandom.current().nextLong(from.time, to.time))
 object RandomDataGenerator {
 
-    private val names = arrayOf("Ada", "Adela", "Adelajda", "Adrianna", "Agata", "Agnieszka", "Aldona", "Aleksandra",
+    val names = arrayOf("Ada", "Adela", "Adelajda", "Adrianna", "Agata", "Agnieszka", "Aldona", "Aleksandra",
             "Alicja", "Alina", "Amanda", "Amelia", "Anastazja", "Andżelika", "Aneta", "Anita", "Anna", "Antonina",
             "Barbara", "Beata", "Berenika", "Bernadeta", "Blanka", "Bogusława", "Bożena", "Cecylia", "Celina", "Czesława",
             "Dagmara", "Danuta", "Daria", "Diana", "Dominika", "Dorota", "Edyta", "Eliza", "Elwira", "Elżbieta", "Emilia",
@@ -32,7 +35,7 @@ object RandomDataGenerator {
             "Stefan", "Sylwester", "Szymon", "Tadeusz", "Teodor", "Tomasz", "Wacław", "Waldemar", "Wiesław", "Wiktor",
             "Witold", "Władysław", "Włodzimierz", "Wojciech", "Zbigniew", "Zdzisław", "Zenon", "Zygmunt")
 
-    private val surnames = arrayOf("nowak", "kowalska", "wiśniewska", "wójcik", "kowalczyk", "kamińska", "lewandowska",
+    val surnames = arrayOf("nowak", "kowalska", "wiśniewska", "wójcik", "kowalczyk", "kamińska", "lewandowska",
             "dąbrowska", "zielińska", "szymańska", "woźniak", "kozłowska", "jankowska", "wojciechowska", "kwiatkowska", "mazur",
             "krawczyk", "piotrowska", "kaczmarek", "grabowska", "pawłowska", "michalska", "zając", "król", "nowakowska",
             "wieczorek", "jabłońska", "majewska", "adamczyk", "wróbel", "nowicka", "dudek", "olszewska", "jaworska",
@@ -41,16 +44,14 @@ object RandomDataGenerator {
             "lewandowski", "dąbrowski", "zieliński", "szymański", "woźniak", "kozłowski", "jankowski", "mazur")
 
 
-    private  var positions = arrayOf("Technik", "Licencjat", "Inrzynier", "Magister", "Doktor", "Profesor")
+    var titles = arrayOf("Technik", "Licencjat", "Inrzynier", "Magister", "Doktor", "Profesor")
+
+    var subjects = arrayOf("J. Polski", "Matematyka", "Biologia", "Chemia", "Informatyka", "J. Angielski", "Fizyka")
 
 
-    fun randomName(): String = names[ThreadLocalRandom.current().nextInt(names.size)].capitalize()
-    fun randomSurname(): String = surnames[ThreadLocalRandom.current().nextInt(surnames.size)].capitalize()
-    fun randomPosition(): String = positions[ThreadLocalRandom.current().nextInt(positions.size)].capitalize()
 
     fun randomPesel(): String {
         val sb = StringBuilder()
-
         val age = ThreadLocalRandom.current().nextInt(18, 81) // 18-80
         val year = 117 - age // 2017 - age
         sb.append(year)
@@ -69,9 +70,5 @@ object RandomDataGenerator {
         return sb.toString()
     }
 
-    fun randomDate(from: Date, to: Date): Date {
-        val timestamp = ThreadLocalRandom.current().nextLong(from.time, to.time)
-        return Date(timestamp)
-    }
 
 }

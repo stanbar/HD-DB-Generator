@@ -1,7 +1,14 @@
 package generator.data
 
-data class Subject(
-        val id: String,
-        val name: String)
+import java.util.concurrent.atomic.AtomicInteger
+
+data class Subject(val name: String) {
+
+    val id: Int = lastId.getAndIncrement()
+
+    companion object {
+        private val lastId = AtomicInteger(0)
+    }
+}
 
 

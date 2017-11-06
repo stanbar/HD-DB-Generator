@@ -1,3 +1,13 @@
 package generator.data
 
-data class Exam(var name: String)
+import java.util.concurrent.atomic.AtomicInteger
+
+data class Exam(val name: String,
+                val year: Int){
+
+    val id: Int = lastId.getAndIncrement()
+
+    companion object {
+        private val lastId = AtomicInteger(0)
+    }
+}

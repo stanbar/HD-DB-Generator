@@ -1,8 +1,10 @@
 package generator.data
 
-data class Teacher(
-        val pesel: Int,
-        val imie: String,
-        val nazwisko: String,
-        val title: String)
+import generator.RandomDataGenerator
+
+data class Teacher(val name: String,
+        val surname: String,
+        val title: String) {
+    val pesel: String = RandomDataGenerator.randomPesel()
+}
 
