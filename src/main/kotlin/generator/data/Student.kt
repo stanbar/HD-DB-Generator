@@ -1,9 +1,26 @@
 package generator.data
 
 import generator.RandomDataGenerator
+import generator.random
 
-data class Student(val class_id: Int,
-                   val name: String,
-                   val surname: Int){
-    val pesel: String = RandomDataGenerator.randomPesel()
+data class Student(val class_id: Int, val pesel: String, val name: String, val surname: String) : Insertable {
+
+    override fun toInsert() = "$class_id;$pesel;$name;$surname"
+
+    companion object : Schematable {
+
+        fun random(class_id: Int) = Student(class_id = class_id, pesel = RandomDataGenerator.randomPesel(),
+                name = RandomDataGenerator.names.random(), surname = RandomDataGenerator.surnames.random())
+
+        override val schema: String = "CREATE TABLE Student\n" +
+                "(\n" +
+                "    PESEL nchar(11) PRIMARY KEY,\n" +
+                "    Name nvarchar(40) NOT NULL,\n" +
+                "    Surname nvarchar(40) NOT NULL,\n" +
+                "    Title nvarchar(40) NOT NULL,\n" +
+                "    Class_ID INTEGER NOT NULL FOREIGN KEY REFERENCES Class\n" +
+                ")"
+
+    }
+
 }

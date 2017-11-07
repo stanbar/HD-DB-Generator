@@ -6,6 +6,7 @@ import java.util.concurrent.ThreadLocalRandom
 
 fun Array<String>.random() = this[ThreadLocalRandom.current().nextInt(size)].capitalize()
 fun Date.random(from: Date, to: Date) = Date(ThreadLocalRandom.current().nextLong(from.time, to.time))
+
 object RandomDataGenerator {
 
     val names = arrayOf("Ada", "Adela", "Adelajda", "Adrianna", "Agata", "Agnieszka", "Aldona", "Aleksandra",
@@ -46,8 +47,6 @@ object RandomDataGenerator {
 
     var titles = arrayOf("Technik", "Licencjat", "Inrzynier", "Magister", "Doktor", "Profesor")
 
-    var subjects = arrayOf("J. Polski", "Matematyka", "Biologia", "Chemia", "Informatyka", "J. Angielski", "Fizyka")
-
 
 
     fun randomPesel(): String {
@@ -69,6 +68,10 @@ object RandomDataGenerator {
 
         return sb.toString()
     }
+
+    fun randomGrade() = ThreadLocalRandom.current().nextDouble(2.0, 6.0)
+
+    fun nextTitle(title: String) = titles.getOrNull(titles.indexOf(title) + 1) ?: title
 
 
 }
