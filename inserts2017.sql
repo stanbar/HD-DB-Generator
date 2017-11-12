@@ -1,0 +1,6 @@
+BULK INSERT dbo.Class FROM '/home/bulks/Class2017.bulk' WITH (FIELDTERMINATOR=';')
+BULK INSERT dbo.Grade FROM '/home/bulks/Grade2017.bulk' WITH (FIELDTERMINATOR=';')
+BULK INSERT dbo.Student FROM '/home/bulks/Student2017.bulk' WITH (FIELDTERMINATOR=';')
+BULK INSERT dbo.Exam FROM '/home/bulks/Exam2017.bulk' WITH (FIELDTERMINATOR=';')
+BULK INSERT dbo.Examination FROM '/home/bulks/Examination2017.bulk' WITH (FIELDTERMINATOR=';')
+BULK INSERT dbo.SubjectKlassRel FROM '/home/bulks/SubjectKlassRel2017.bulk' WITH (FIELDTERMINATOR=';')

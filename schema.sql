@@ -14,9 +14,11 @@ CREATE TABLE Subject
 )
 CREATE TABLE Class
 (
+    ID INTEGER IDENTITY(1, 1) PRIMARY KEY,
+    Level INTEGER NOT NULL,
     Sign nvarchar(1) NOT NULL,
-    Year INTEGER NOT NULL,
     Tutor_PESEL nchar(11) NOT NULL FOREIGN KEY REFERENCES Teacher,
+    OriginYear INTEGER NOT NULL,
 )
 CREATE TABLE Teacher
 (
@@ -30,7 +32,6 @@ CREATE TABLE Student
     PESEL nchar(11) PRIMARY KEY,
     Name nvarchar(40) NOT NULL,
     Surname nvarchar(40) NOT NULL,
-    Title nvarchar(40) NOT NULL,
     Class_ID INTEGER NOT NULL FOREIGN KEY REFERENCES Class
 )
 CREATE TABLE Grade
