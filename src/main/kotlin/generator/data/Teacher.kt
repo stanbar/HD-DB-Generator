@@ -7,14 +7,13 @@ data class Teacher(
         val pesel: String,
         val name: String,
         val surname: String,
-        val title: String) : Insertable {
+        var title: String) : Insertable {
     override fun toInsert() = "$pesel;$name;$surname;$title"
 
-    fun updateTitle()
-            = Teacher(pesel = pesel, name = name, surname = surname, title = RandomDataGenerator.nextTitle(title))
-
-    fun updateSurname()
-            = Teacher(pesel = pesel, name = name, surname = RandomDataGenerator.surnames.random(), title = title)
+    fun updateTitle(): Teacher {
+        title = RandomDataGenerator.nextTitle(title)
+        return this
+    }
 
     companion object : Schematable {
         override val schema: String = "CREATE TABLE Teacher\n" +

@@ -4,11 +4,11 @@ import generator.data.Insertable
 import generator.data.Schematable
 import java.util.concurrent.atomic.AtomicInteger
 
-class SubjectTeacherRel(val teacher_pesel: String,
-                        val subject_id: Int) : Insertable {
+class SubjectTeacherRel(private val teacher_pesel: String,
+                        private val subject_id: Int) : Insertable {
     override fun toInsert() = "$id;$teacher_pesel;$subject_id"
 
-    val id: Int = lastId.getAndIncrement()
+    private val id: Int = lastId.getAndIncrement()
 
     companion object : Schematable {
 

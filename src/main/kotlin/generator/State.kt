@@ -10,139 +10,148 @@ import java.util.*
 import java.util.concurrent.ThreadLocalRandom
 import kotlin.collections.ArrayList
 
-class OriginState(var year: Int, private val classSize: Int = defaultClassSize, private val maxTeachersPerSubject: Int = defaultMaxTeachers) {
+fun Collection<Insertable>.dump(fileName: String) {
+    FileWriter(fileName).use { writer ->
+        forEach { writer.appendln(it.toInsert()) }
+    }
+}
 
-    private val subjects = arrayListOf(Subject("J. Polski"), Subject("Matematyka"), Subject("Biologia")
+open class State(var year: Int, protected val classSize: Int = defaultClassSize, protected val maxTeachersPerSubject: Int = defaultMaxTeachers) {
+
+    protected val subjects = arrayListOf(Subject("J. Polski"), Subject("Matematyka"), Subject("Biologia")
             , Subject("Chemia"), Subject("Informatyka"), Subject("J. Angielski"), Subject("Fizyka"))
 
 
-    private val subjectTeachers = HashMap<Subject, LinkedList<Teacher>>()
-    private val subjectTeacherRel = LinkedList<SubjectTeacherRel>()
+    protected val subjectTeachers = HashMap<Subject, LinkedList<Teacher>>()
+    protected val subjectTeacherRel = LinkedList<SubjectTeacherRel>()
 
-    private val klasses = HashMap<Int, Klass>()
-    private val klassSubjects = LinkedList<SubjectKlassRel>()
+    protected val klasses = HashMap<Int, Klass>()
+    protected val klassSubjects = LinkedList<SubjectKlassRel>()
 
-    private val grades = HashMap<Int, Grade>()
-    private val students = HashMap<String, Student>()
+    protected val grades = HashMap<Int, Grade>()
+    protected val students = HashMap<String, Student>()
 
-    private val exams = HashMap<Int, Exam>()
-    private val studentExams = LinkedList<Examination>()
+    protected val exams = HashMap<Int, Exam>()
+    protected val examinations = LinkedList<Examination>()
 
     init {
         subjects.forEach { subjectTeachers.put(it, LinkedList()) }
     }
 
-    private fun Collection<Insertable>.dump(fileName: String) {
-        FileWriter(fileName).use { writer ->
-            forEach { writer.appendln(it.toInsert()) }
-        }
-    }
 
     fun dumpBulks() {
         File("bulks").mkdirs()
-        subjects.dump("bulks/subjects.bulk")
-        subjectTeachers.forEach { t, u -> u.dump("bulks/teachers.bulk") }
-        klasses.values.dump("bulks/classes.bulk")
-        grades.values.dump("bulks/grades.bulk")
-        students.values.dump("bulks/students.bulk")
-        exams.values.dump("bulks/exams.bulk")
-        subjectTeacherRel.dump("bulks/subjectTeacherRel.bulk")
-        klassSubjects.dump("bulks/klassSubjects.bulk")
-        studentExams.dump("bulks/studentExams.bulk")
-    }
-
-    //
-    fun generateTeachersWithSubjectRelations() {
-        for (subject in subjects) {
-            repeat(ThreadLocalRandom.current().nextInt(1, maxTeachersPerSubject)) {
-                val teacher = Teacher.random()
-
-                subjectTeachers[subject]?.add(teacher)
-                val relation = SubjectTeacherRel(teacher.pesel, subject.id)
-                subjectTeacherRel += relation
-            }
-        }
-    }
-
-    fun generateClassesWithSubjectRelations() {
-        for (level in 1..4) {
-            for (sign in CharRange('A', 'C')) {
-                val tutor = generateTutorForKlass()
-                val klass = Klass(level, sign, tutor.pesel, year)
-                klasses.put(klass.id, klass)
-            }
-        }
+        subjects.dump("bulks/Subject.bulk")
+        subjectTeachers.forEach { t, u -> u.dump("bulks/Teacher.bulk") }
+        klasses.values.dump("bulks/Class.bulk")
+        grades.values.dump("bulks/Grade.bulk")
+        students.values.dump("bulks/Student.bulk")
+        exams.values.dump("bulks/Exam.bulk")
+        subjectTeacherRel.dump("bulks/SubjectTeacherRel.bulk")
+        klassSubjects.dump("bulks/SubjectKlassRel.bulk")
+        examinations.dump("bulks/Examination.bulk")
     }
 
 
-    private fun generateTutorForKlass(): Teacher {
+    protected fun generateTutorForKlass(): Teacher {
         val randSubject = subjects[ThreadLocalRandom.current().nextInt(subjects.size)]
         val teachers = subjectTeachers[randSubject]!!
         return teachers[ThreadLocalRandom.current().nextInt(teachers.size)]
     }
 
-    fun generateKlassToSubjectRelations() {
-        klasses.forEach { id, klass ->
-            subjects.map { subject ->
-                val teachers = subjectTeachers[subject]!!
-                val teacher = teachers.get(ThreadLocalRandom.current().nextInt(teachers.size))
-                SubjectKlassRel(subject.id, klass.id, teacher.pesel)
-            }.forEach { klassSubjects += it }
-        }
-    }
 
-    fun generateStudentsForEachKlass() {
-        for (klass in klasses) {
-            repeat(classSize) {
-                val student = Student.random(klass.key)
-                students.put(student.pesel, student)
-            }
-        }
-    }
-
-    fun generateMarksForeachStudent() {
+    fun generateMarksForeachStudent(): List<Grade> {
+        val updateList = ArrayList<Grade>()
         students.forEach { pesel, student ->
+            if (klasses[student.class_id]!!.currentLevel(year) > 4)
+                return@forEach
             subjects.forEach { subject ->
                 val teacherPesel = getTeacherFor(subject, student.class_id)
                 val grade = Grade.random(year, subject.id, teacherPesel, student.pesel)
                 grades.put(grade.id, grade)
+                updateList.add(grade)
             }
-
-
         }
+        return updateList
     }
 
 
-    private fun getTeacherFor(subject: Subject, klass_id: Int): String {
+    protected fun getTeacherFor(subject: Subject, klass_id: Int): String {
         klassSubjects.filter { it.subject_id == subject.id && klass_id == it.klass_id }
                 .forEach { return it.teacher_pesel }
         throw IllegalStateException("Could not find $subject and $klass_id relation")
     }
 
-    fun generateExamsWithStudentRelations() {
-        students.forEach { pesel, student ->
-            if (klasses[student.class_id]!!.level != 4) // Only 4 level classes take exams
-                return@forEach
+    fun generateExams(): List<Exam> {
+        val updates = ArrayList<Exam>()
+        subjects.forEach {
+            val exam = Exam(it.name, year)
+            exams.put(exam.id, exam)
+            updates += exam
+        }
+        return updates
+    }
 
-            subjects.forEach { subject ->
-                val exam = Exam(subject.name, year)
-                val examRelation = Examination.random(student.pesel, exam.id, year)
-                exams.put(exam.id, exam)
-                studentExams += examRelation
+    fun generateExamsWithStudentRelations(): List<Examination> {
+        val updates = ArrayList<Examination>()
+        exams.forEach { id, exam ->
+            students.forEach { pesel, student ->
+                if (klasses[student.class_id]!!.currentLevel(year) != 4) // Only 4 level classes take exams
+                    return@forEach
 
+                subjects.forEach { subject ->
+                    val examRelation = Examination.random(student.pesel, exam.id, year)
+                    examinations += examRelation
+                    updates += examRelation
+                }
             }
         }
+        return updates
     }
 
-    fun nextYear() {
-        generateFirstClasses()
-        updateRandomTeachers(10)
-        updateRandomTeachers(10)
 
+    fun generateFirstClasses(): List<Klass> {
+        val updateList = ArrayList<Klass>()
+        for (sign in CharRange('A', 'C')) {
+            val tutor = generateTutorForKlass()
+            val klass = Klass(sign, tutor.pesel, year)
+            klasses.put(klass.id, klass)
+            updateList.add(klass)
+        }
+        return updateList
     }
 
-    private fun generateFirstClasses() {
+    fun generateKlassToSubjectRelationsForFirstClasses(): List<SubjectKlassRel> {
+        val updateList = ArrayList<SubjectKlassRel>()
+        klasses.forEach { id, klass ->
+            if (klass.currentLevel(year) > 1)
+                return@forEach
 
+            subjects.map { subject ->
+                val teachers = subjectTeachers[subject]!!
+                val teacher = teachers.get(ThreadLocalRandom.current().nextInt(teachers.size))
+                SubjectKlassRel(subject.id, klass.id, teacher.pesel)
+            }.forEach {
+                updateList.add(it)
+                klassSubjects += it
+            }
+        }
+        return updateList
+    }
+
+    fun generateStudentsForEachFirstKlass(): List<Student> {
+        val updatedStudents = ArrayList<Student>()
+        for (klass in klasses) {
+            if (klass.value.currentLevel(year) > 1)
+                continue
+
+            repeat(classSize) {
+                val student = Student.random(klass.key)
+                students.put(student.pesel, student)
+                updatedStudents.add(student)
+            }
+        }
+        return updatedStudents
     }
 
 

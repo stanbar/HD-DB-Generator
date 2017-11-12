@@ -3,9 +3,9 @@ package generator.data
 import generator.RandomDataGenerator
 import generator.random
 
-data class Student(val class_id: Int, val pesel: String, val name: String, val surname: String) : Insertable {
+data class Student(val class_id: Int, val pesel: String, val name: String, var surname: String) : Insertable {
 
-    override fun toInsert() = "$class_id;$pesel;$name;$surname"
+    override fun toInsert() = "$pesel;$name;$surname;$class_id"
 
     companion object : Schematable {
 
@@ -17,10 +17,14 @@ data class Student(val class_id: Int, val pesel: String, val name: String, val s
                 "    PESEL nchar(11) PRIMARY KEY,\n" +
                 "    Name nvarchar(40) NOT NULL,\n" +
                 "    Surname nvarchar(40) NOT NULL,\n" +
-                "    Title nvarchar(40) NOT NULL,\n" +
                 "    Class_ID INTEGER NOT NULL FOREIGN KEY REFERENCES Class\n" +
                 ")"
 
+    }
+
+    fun updateSurname(): Student {
+        surname = RandomDataGenerator.surnames.random()
+        return this
     }
 
 }
