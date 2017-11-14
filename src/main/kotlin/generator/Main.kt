@@ -2,6 +2,8 @@ package generator
 
 import generator.data.*
 import generator.data.relations.Examination
+import generator.data.relations.SubjectKlassRel
+import generator.data.relations.SubjectTeacherRel
 import java.io.FileWriter
 import java.util.concurrent.ThreadLocalRandom
 
@@ -48,21 +50,26 @@ fun generateSchema() {
         it.appendln("DROP TABLE IF EXISTS Student")
         it.appendln("DROP TABLE IF EXISTS Exam")
         it.appendln(Subject.schema)
-        it.appendln(Klass.schema)
         it.appendln(Teacher.schema)
+        it.appendln(Klass.schema)
         it.appendln(Student.schema)
         it.appendln(Grade.schema)
         it.appendln(Exam.schema)
         it.appendln(Examination.schema)
+        it.appendln(SubjectTeacherRel.schema)
+        it.appendln(SubjectKlassRel.schema)
     }
 }
+
+val bulksPath = "/Users/admin1/GoogleDrive/ProjectsJava/db-generator/bulks/"
 
 fun generateInserts() {
     val entities = arrayOf("Subject", "Class", "Teacher", "Grade", "Student", "Exam", "Examination", "SubjectTeacherRel", "SubjectKlassRel")
 
     FileWriter("inserts.sql").use { writer ->
+        writer.appendln("USE school")
         entities.forEach { writer.appendln("DELETE FROM $it") }
-        entities.forEach { writer.appendln("BULK INSERT dbo.$it FROM '/home/bulks/$it.bulk' WITH (FIELDTERMINATOR=';')") }
+        entities.forEach { writer.appendln("BULK INSERT dbo.$it FROM '$bulksPath$it.bulk' WITH (FIELDTERMINATOR=';')") }
     }
 }
 
@@ -80,7 +87,7 @@ fun buildUpdate(state: State) {
         generateExamsWithStudentRelations().dump("bulks/Examination${state.year}.bulk")
     }
     FileWriter("inserts${state.year}.sql").use { writer ->
-        entities.forEach { writer.appendln("BULK INSERT dbo.$it FROM '/home/bulks/$it${state.year}.bulk' WITH (FIELDTERMINATOR=';')") }
+        entities.forEach { writer.appendln("BULK INSERT dbo.$it FROM '$bulksPath$it${state.year}.bulk' WITH (FIELDTERMINATOR=';')") }
     }
 
     updateSlowyChangedVariable(state)
