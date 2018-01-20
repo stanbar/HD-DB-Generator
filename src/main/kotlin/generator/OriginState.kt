@@ -7,13 +7,16 @@ import generator.data.relations.SubjectKlassRel
 import generator.data.relations.SubjectTeacherRel
 import java.util.concurrent.ThreadLocalRandom
 
-class OriginState(year: Int, classSize: Int = defaultClassSize, maxTeachersPerSubject: Int = defaultMaxTeachers)
-    : State(year, classSize, maxTeachersPerSubject) {
+class OriginState(year: Int, classSize: Int = defaultClassSize)
+    : State(year, classSize) {
 
     fun generateStudentsForEachKlass() {
+        var supervisorPesel : String? = null
         for (klass in klasses) {
             repeat(classSize) {
-                val student = Student.random(klass.key)
+                val student = Student.random(klass.value,supervisorPesel = supervisorPesel)
+                if(supervisorPesel == null)
+                    supervisorPesel = student.pesel
                 students.put(student.pesel, student)
             }
         }
@@ -24,7 +27,7 @@ class OriginState(year: Int, classSize: Int = defaultClassSize, maxTeachersPerSu
             subjects.map { subject ->
                 val teachers = subjectTeachers[subject]!!
                 val teacher = teachers.get(ThreadLocalRandom.current().nextInt(teachers.size))
-                SubjectKlassRel(subject.id, klass.id, teacher.pesel)
+                SubjectKlassRel(subject, klass, teacher)
             }.forEach { klassSubjects += it }
         }
     }
@@ -34,8 +37,9 @@ class OriginState(year: Int, classSize: Int = defaultClassSize, maxTeachersPerSu
      */
     fun generateTeachersWithSubjectRelations() {
         for (subject in subjects) {
-            repeat(ThreadLocalRandom.current().nextInt(1, maxTeachersPerSubject)) {
-                val teacher = Teacher.random()
+            val teacherSupervisor : String? = null
+            repeat(ThreadLocalRandom.current().nextInt(minTeachersPerSubject, maxTeachersPerSubject)) {
+                val teacher = Teacher.random(year,teacherSupervisor,subject)
 
                 subjectTeachers[subject]?.add(teacher)
                 val relation = SubjectTeacherRel(teacher.pesel, subject.id)

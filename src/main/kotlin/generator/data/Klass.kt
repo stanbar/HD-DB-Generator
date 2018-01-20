@@ -15,12 +15,12 @@ data class Klass(
 
     companion object : Schematable {
         private val lastId = AtomicInteger(0)
-
-        override val schema = "CREATE TABLE Class\n" +
+        override val tableName: String = "Class"
+        override val schema = "CREATE TABLE $tableName\n" +
                 "(\n" +
                 "    ID INTEGER IDENTITY(1, 1) PRIMARY KEY,\n" +
                 "    Sign nvarchar(1) NOT NULL,\n" +
-                "    Tutor_PESEL nchar(11) NOT NULL FOREIGN KEY REFERENCES Teacher,\n" +
+                "    Tutor_PESEL nvarchar(11) NOT NULL FOREIGN KEY REFERENCES Teacher,\n" +
                 "    OriginYear INTEGER NOT NULL,\n" +
                 ")"
     }

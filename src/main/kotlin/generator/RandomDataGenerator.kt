@@ -73,5 +73,17 @@ object RandomDataGenerator {
 
     fun nextTitle(title: String) = titles.getOrNull(titles.indexOf(title) + 1) ?: title
 
+    fun randomCalendar(): Calendar {
+        val randomYear = ThreadLocalRandom.current().nextInt(1990, 2012)
+        val randomMonth = ThreadLocalRandom.current().nextInt(1, 12)
+        val randomDay = ThreadLocalRandom.current().nextInt(1, 28)
+
+        val cal :java.util.Calendar = java.util.Calendar.getInstance()
+        cal.set(java.util.Calendar.YEAR, randomYear)
+        cal.set(java.util.Calendar.MONDAY, randomMonth)
+        cal.set(java.util.Calendar.DAY_OF_MONTH,randomDay)
+        return cal
+    }
+
 
 }
