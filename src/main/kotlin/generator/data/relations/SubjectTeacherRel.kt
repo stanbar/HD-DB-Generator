@@ -15,7 +15,7 @@ class SubjectTeacherRel(private val teacher: Teacher,
     companion object : Schematable {
         override val tableName: String = "SubjectTeacherRel"
 
-        private val lastId = AtomicInteger(0)
+        private val lastId = AtomicInteger(1)
         override val schema: String = "CREATE TABLE $tableName\n" +
                 "(\n" +
                 "    ID INTEGER IDENTITY(1, 1) PRIMARY KEY,\n" +

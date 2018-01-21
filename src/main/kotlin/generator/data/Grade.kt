@@ -1,7 +1,6 @@
 package generator.data
 
 import generator.RandomDataGenerator
-import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
 data class Grade(
@@ -16,11 +15,9 @@ data class Grade(
 
     companion object : Schematable {
 
-        private val lastId = AtomicInteger(0)
-        fun random(year: Int, subject: Subject, teacher: Teacher, student: Student): Grade {
-            val calendar = Calendar.getInstance()
-            calendar.set(Calendar.YEAR, year)
-            return Grade(lastId.getAndIncrement(), MyCalendar(calendar), RandomDataGenerator.randomGrade(), subject, teacher, student)
+        private val lastId = AtomicInteger(1)
+        fun random(subject: Subject, teacher: Teacher, student: Student, calendar: MyCalendar): Grade {
+            return Grade(lastId.getAndIncrement(), calendar, RandomDataGenerator.randomGrade(), subject, teacher, student)
         }
         override val tableName: String = "Grade"
         override val schema: String = "CREATE TABLE $tableName\n" +

@@ -6,7 +6,7 @@ import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
 data class Teacher(
-        val id : Int = lastId.getAndIncrement(),
+        val id: Int = lastId.getAndIncrement(),
         val pesel: String,
         val name: String,
         val surname: String,
@@ -30,7 +30,7 @@ data class Teacher(
 
 
     companion object : Schematable {
-        private val lastId = AtomicInteger(0)
+        private val lastId = AtomicInteger(1)
 
         override val tableName: String = "Teacher"
         override val schema: String = "CREATE TABLE $tableName\n" +
@@ -47,9 +47,7 @@ data class Teacher(
                 ")"
 
 
-        fun random(year: Int, supervisorId: Int?, subject: Subject): Teacher {
-            val randomCalendar = RandomDataGenerator.randomCalendar()
-            val myCalendar = MyCalendar(randomCalendar)
+        fun random(year: Int, supervisorId: Int?, subject: Subject, myCalendar: MyCalendar): Teacher {
             val id = lastId.getAndIncrement()
             return Teacher(
                     id = id,
@@ -58,7 +56,7 @@ data class Teacher(
                     surname = RandomDataGenerator.surnames.random(),
                     title = RandomDataGenerator.titles.random(),
                     startWorkingDate = myCalendar,
-                    experienceYears = currentExperience(year, randomCalendar),
+                    experienceYears = currentExperience(year, myCalendar.calendar),
                     supervisorId = supervisorId ?: id,
                     subject = subject)
         }

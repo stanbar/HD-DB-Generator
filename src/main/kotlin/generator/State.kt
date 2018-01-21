@@ -46,9 +46,23 @@ open class State(var year: Int, protected val classSize: Int = defaultClassSize,
     protected val students = HashMap<Int, Student>()
 
     protected val exams = HashMap<Int, Exam>()
+    private var myCalendar: MyCalendar
 
     init {
         subjects.forEach { subjectTeachers.put(it, LinkedList()) }
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.YEAR, year)
+        myCalendar = MyCalendar(calendar)
+
+        calendars.add(myCalendar)
+    }
+
+    fun generateNewCalendars() {
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.YEAR, year)
+        myCalendar = MyCalendar(calendar)
+
+        calendars.add(myCalendar)
     }
 
 
@@ -82,13 +96,15 @@ open class State(var year: Int, protected val classSize: Int = defaultClassSize,
 
     fun generateMarksForeachStudent(): List<Grade> {
         val updateList = ArrayList<Grade>()
+
+
         students.forEach { id, student ->
             if (klasses[student.klass.id]!!.currentLevel(year) > 4)
                 return@forEach
             subjects.forEach { subject ->
                 val teacher = getTeacherFor(subject, student.klass)
 
-                val grade = Grade.random(year, subject, teacher, student)
+                val grade = Grade.random(subject, teacher, student, myCalendar)
                 grades.put(grade.id, grade)
                 updateList.add(grade)
             }
@@ -107,7 +123,7 @@ open class State(var year: Int, protected val classSize: Int = defaultClassSize,
                 val exam = Exam.random(student,
                         subject,
                         teacher,
-                        year)
+                        myCalendar)
                 exams[exam.id] = exam
                 updates += exam
             }

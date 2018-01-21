@@ -18,7 +18,7 @@ class MyCalendar(val calendar: Calendar) : Insertable {
     val year: Int = calendar.get(Calendar.YEAR)
 
     companion object : Schematable {
-        private val lastId = AtomicInteger(0)
+        private val lastId = AtomicInteger(1)
         override val tableName: String = "MyCalendar"
         override val schema: String = "CREATE TABLE $tableName\n" +
                 "(\n" +

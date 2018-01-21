@@ -1,6 +1,7 @@
 package generator
 
 import generator.data.Klass
+import generator.data.MyCalendar
 import generator.data.Student
 import generator.data.Teacher
 import generator.data.relations.SubjectKlassRel
@@ -39,7 +40,12 @@ class OriginState(year: Int, classSize: Int = defaultClassSize)
         for (subject in subjects) {
             var teacherSupervisor: Int? = null
             repeat(ThreadLocalRandom.current().nextInt(minTeachersPerSubject, maxTeachersPerSubject)) {
-                val teacher = Teacher.random(year, teacherSupervisor, subject) // BUG ??
+
+                val randomCalendar = RandomDataGenerator.randomCalendar()
+                val myCalendar = MyCalendar(randomCalendar)
+                calendars.add(myCalendar)
+
+                val teacher = Teacher.random(year, teacherSupervisor, subject, myCalendar) // BUG ??
                 if (teacherSupervisor == null)
                     teacherSupervisor = teacher.id
 

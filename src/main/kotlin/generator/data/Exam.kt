@@ -1,6 +1,5 @@
 package generator.data
 
-import java.util.*
 import java.util.concurrent.ThreadLocalRandom
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -17,15 +16,14 @@ data class Exam(
 
     companion object : Schematable {
         override val tableName: String = "Exam"
-        private val lastId = AtomicInteger(0)
+        private val lastId = AtomicInteger(1)
 
-        fun random(student: Student, subject: Subject, teacher: Teacher, year: Int): Exam {
+        fun random(student: Student, subject: Subject, teacher: Teacher,  calendar : MyCalendar): Exam {
 
-            val calendar = Calendar.getInstance()
-            calendar.set(Calendar.YEAR, year)
+
             return Exam(
                     result = ThreadLocalRandom.current().nextDouble(0.0, 100.0),
-                    date = MyCalendar(calendar),
+                    date = calendar,
                     student = student,
                     subject = subject,
                     teacher = teacher)

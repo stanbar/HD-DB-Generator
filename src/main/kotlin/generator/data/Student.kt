@@ -16,7 +16,7 @@ data class Student(val id : Int = lastId.getAndIncrement()
             return Student(id = id,klass = klass, pesel = RandomDataGenerator.randomPesel(),
                     name = RandomDataGenerator.names.random(), surname = RandomDataGenerator.surnames.random(), supervisorID = supervisorId ?: id) //TODO boss to himself
         }
-        private val lastId = AtomicInteger(0)
+        private val lastId = AtomicInteger(1)
         override val tableName: String = "Student"
         override val schema: String = "CREATE TABLE $tableName\n" +
                 "(\n" +

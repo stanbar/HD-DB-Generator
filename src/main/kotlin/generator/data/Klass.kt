@@ -14,7 +14,7 @@ data class Klass(
     override fun toInsert() = "$id;$sign;${tutor.id};$originYear"
 
     companion object : Schematable {
-        private val lastId = AtomicInteger(0)
+        private val lastId = AtomicInteger(1)
         override val tableName: String = "Class"
         override val schema = "CREATE TABLE $tableName\n" +
                 "(\n" +

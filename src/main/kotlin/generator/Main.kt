@@ -96,7 +96,7 @@ fun buildUpdate(state: State) {
 
 
     with(state) {
-
+        generateNewCalendars()
         generateFirstClasses().dump("bulks/${Klass.tableName}${state.year}.bulk")
         generateMarksForeachStudent().dump("bulks/${Grade.tableName}${state.year}.bulk")
         generateStudentsForEachFirstKlass().dump("bulks/${Student.tableName}${state.year}.bulk")

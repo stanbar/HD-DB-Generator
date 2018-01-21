@@ -10,7 +10,7 @@ data class Subject(val name: String) : Insertable {
 
     companion object : Schematable {
 
-        private val lastId = AtomicInteger(0)
+        private val lastId = AtomicInteger(1)
         override val tableName: String = "Subject"
         override val schema: String = "CREATE TABLE $tableName\n" +
                 "(\n" +

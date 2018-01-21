@@ -19,6 +19,6 @@ data class SubjectKlassRel(val subject: Subject,
                 "    Class_ID INTEGER NOT NULL FOREIGN KEY REFERENCES Class,\n" +
                 "    Teacher_ID INTEGER NOT NULL FOREIGN KEY REFERENCES Teacher,\n" +
                 ")"
-        private val lastId = AtomicInteger(0)
+        private val lastId = AtomicInteger(1)
     }
 }
