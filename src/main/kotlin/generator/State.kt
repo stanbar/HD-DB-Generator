@@ -19,27 +19,31 @@ fun Collection<Insertable>.dump(fileName: String) {
 }
 
 
-open class State
-(var year: Int, protected val classSize: Int = defaultClassSize, protected val maxTeachersPerSubject: Int = defaultMaxTeachers, protected val minTeachersPerSubject: Int = defaultMinTeachers) {
+open class State(var year: Int, protected val classSize: Int = defaultClassSize, protected val maxTeachersPerSubject: Int = defaultMaxTeachers, protected val minTeachersPerSubject: Int = defaultMinTeachers) {
 
     protected val subjects = arrayListOf(Subject("J. Polski"), Subject("Matematyka"), Subject("Biologia")
             , Subject("Chemia"), Subject("Informatyka"), Subject("J. Angielski"), Subject("Fizyka"))
 
+    companion object {
+        var dumpedCalendars = HashSet<MyCalendar>()
+        val calendars = HashSet<MyCalendar>()
+
+    }
 
     protected val subjectTeachers = HashMap<Subject, LinkedList<Teacher>>()
     protected val subjectTeacherRel = LinkedList<SubjectTeacherRel>()
 
     protected val klasses = HashMap<Int, Klass>()
     protected val klassSubjects = LinkedList<SubjectKlassRel>()
-    protected val teachers: HashMap<String, Teacher>
+    protected val teachers: HashMap<Int, Teacher>
         get() {
-            val teachers = HashMap<String, Teacher>()
-            subjectTeachers.forEach { subject, teachersList -> teachersList.forEach { teachers[it.pesel] = it } }
+            val teachers = HashMap<Int, Teacher>()
+            subjectTeachers.forEach { subject, teachersList -> teachersList.forEach { teachers[it.id] = it } }
             return teachers
         }
 
     protected val grades = HashMap<Int, Grade>()
-    protected val students = HashMap<String, Student>()
+    protected val students = HashMap<Int, Student>()
 
     protected val exams = HashMap<Int, Exam>()
 
@@ -58,6 +62,8 @@ open class State
         exams.values.dump("bulks/${Exam.tableName}.bulk")
         subjectTeacherRel.dump("bulks/${SubjectTeacherRel.tableName}.bulk")
         klassSubjects.dump("bulks/${SubjectKlassRel.tableName}.bulk")
+        calendars.dump("bulks/${MyCalendar.tableName}.bulk")
+        dumpedCalendars.addAll(calendars)
     }
 
 
@@ -76,13 +82,13 @@ open class State
 
     fun generateMarksForeachStudent(): List<Grade> {
         val updateList = ArrayList<Grade>()
-        students.forEach { pesel, student ->
+        students.forEach { id, student ->
             if (klasses[student.klass.id]!!.currentLevel(year) > 4)
                 return@forEach
             subjects.forEach { subject ->
-                val teacherPesel = getTeacherFor(subject, student.klass)
+                val teacher = getTeacherFor(subject, student.klass)
 
-                val grade = Grade.random(year, subject, teacherPesel, student)
+                val grade = Grade.random(year, subject, teacher, student)
                 grades.put(grade.id, grade)
                 updateList.add(grade)
             }
@@ -114,7 +120,7 @@ open class State
         val updateList = ArrayList<Klass>()
         for (sign in CharRange('A', 'C')) {
             val tutor = generateTutorForKlass()
-            val klass = Klass(sign, tutor.pesel, year)
+            val klass = Klass(sign, tutor, year)
             klasses.put(klass.id, klass)
             updateList.add(klass)
         }
@@ -145,19 +151,28 @@ open class State
         return updateList
     }
 
+    fun newCalendars(): HashSet<MyCalendar> {
+        val updates = HashSet<MyCalendar>()
+        updates.addAll(calendars)
+        updates.removeAll(dumpedCalendars)
+        dumpedCalendars.addAll(calendars)
+        return updates
+    }
+
+
     fun generateStudentsForEachFirstKlass(): List<Student> {
         val updatedStudents = ArrayList<Student>()
         for (klass in klasses) {
             if (klass.value.currentLevel(year) > 1)
                 continue
-            var superVisorPesel: String? = null
+            var supervisorId: Int? = null
             repeat(classSize) {
-                val student = Student.random(klass.value, superVisorPesel)
-                if (superVisorPesel == null)
-                    superVisorPesel = student.pesel
+                val student = Student.random(klass.value, supervisorId)
+                if (supervisorId == null)
+                    supervisorId = student.id
 
                 //TODO supervisor end null or himself
-                students.put(student.pesel, student)
+                students.put(student.id, student)
                 updatedStudents.add(student)
             }
         }

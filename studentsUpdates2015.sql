@@ -1,5 +1,1 @@
-UPDATE dbo.Student SET Surname = 'Zielińska' WHERE PESEL = '84081627638'
-UPDATE dbo.Student SET Surname = 'Dąbrowski' WHERE PESEL = '88061545219'
-UPDATE dbo.Student SET Surname = 'Kowalczyk' WHERE PESEL = '84012442861'
-UPDATE dbo.Student SET Surname = 'Kamiński' WHERE PESEL = '39122304497'
-UPDATE dbo.Student SET Surname = 'Kaczmarek' WHERE PESEL = '75111136873'
+UPDATE dbo.Student SET Surname = 'Wójcik' WHERE ID = '210'

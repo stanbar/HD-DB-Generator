@@ -58,6 +58,7 @@ fun generateSchema() {
         it.appendln("DROP TABLE IF EXISTS ${Grade.tableName}")
         it.appendln("DROP TABLE IF EXISTS ${Student.tableName}")
         it.appendln("DROP TABLE IF EXISTS ${Exam.tableName}")
+        it.appendln("DROP TABLE IF EXISTS ${MyCalendar.tableName}")
         it.appendln("*/")
         it.appendln(Subject.schema)
         it.appendln(MyCalendar.schema)
@@ -67,6 +68,7 @@ fun generateSchema() {
         it.appendln(Grade.schema)
         it.appendln(Exam.schema)
 
+
         it.appendln(SubjectTeacherRel.schema)
         it.appendln(SubjectKlassRel.schema)
     }
@@ -74,7 +76,7 @@ fun generateSchema() {
 
 
 fun generateInserts() {
-    val entities = arrayOf(Subject::class, Klass::class, Teacher::class, Grade::class, Student::class,
+    val entities = arrayOf(MyCalendar::class, Subject::class, Klass::class, Teacher::class, Grade::class, Student::class,
             Exam::class, SubjectTeacherRel::class, SubjectKlassRel::class).map { it.companionObjectInstance as Schematable }
 
     FileWriter("inserts.sql").use { writer ->
@@ -89,17 +91,20 @@ fun generateInserts() {
 
 fun buildUpdate(state: State) {
     state.year++
-    val entities = arrayOf(Klass::class, Grade::class, Student::class, Exam::class, SubjectKlassRel::class, Teacher::class)
+    val entities = arrayOf(MyCalendar::class, Klass::class, Grade::class, Student::class, Exam::class, SubjectKlassRel::class, Teacher::class)
             .map { it.companionObjectInstance as Schematable }
 
 
     with(state) {
+
         generateFirstClasses().dump("bulks/${Klass.tableName}${state.year}.bulk")
         generateMarksForeachStudent().dump("bulks/${Grade.tableName}${state.year}.bulk")
         generateStudentsForEachFirstKlass().dump("bulks/${Student.tableName}${state.year}.bulk")
         generateExamsWithStudentRelations().dump("bulks/${Exam.tableName}${state.year}.bulk")
         generateKlassToSubjectRelationsForFirstClasses().dump("bulks/${SubjectKlassRel.tableName}${state.year}.bulk")
         generateTeacherUpdateExpirience().dump("bulks/${Teacher.tableName}${state.year}.bulk")
+        newCalendars().dump("bulks/${MyCalendar.tableName}${state.year}.bulk")
+
     }
     FileWriter("inserts${state.year}.sql").use { writer ->
         entities.forEachIndexed { index, it ->
@@ -111,20 +116,23 @@ fun buildUpdate(state: State) {
     updateSlowyChangedVariable(state)
 }
 
+
+
+
 fun updateSlowyChangedVariable(state: State, updateCount: Int = ThreadLocalRandom.current().nextInt(1, 30)) {
     val updatedTeachers = state.updateRandomTeachers(updateCount)
     val updatedStudents = state.updateRandomStudents(updateCount)
 
     FileWriter("teacherUpdates${state.year}.sql").use { writer ->
         updatedTeachers.forEachIndexed { index, teacher ->
-            writer.append("UPDATE dbo.Teacher SET Title = '${teacher.title}' WHERE PESEL = '${teacher.pesel}'")
+            writer.append("UPDATE dbo.Teacher SET Title = '${teacher.title}' WHERE ID = '${teacher.id}'")
             if (shouldPrintNewLine(index, updatedTeachers.size)) writer.append('\n')
         }
     }
 
     FileWriter("studentsUpdates${state.year}.sql").use { writer ->
         updatedStudents.forEachIndexed { index, student ->
-            writer.append("UPDATE dbo.Student SET Surname = '${student.surname}' WHERE PESEL = '${student.pesel}'")
+            writer.append("UPDATE dbo.Student SET Surname = '${student.surname}' WHERE ID = '${student.id}'")
             if (shouldPrintNewLine(index, updatedStudents.size)) writer.append('\n')
         }
     }

@@ -45,7 +45,7 @@ object RandomDataGenerator {
             "lewandowski", "dąbrowski", "zieliński", "szymański", "woźniak", "kozłowski", "jankowski", "mazur")
 
 
-    var titles = arrayOf("Technik", "Licencjat", "Inrzynier", "Magister", "Doktor", "Profesor")
+    var titles = arrayOf("Technik", "Licencjat", "Inżynier", "Magister", "Doktor", "Profesor")
 
 
 

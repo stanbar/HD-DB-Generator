@@ -11,13 +11,13 @@ class OriginState(year: Int, classSize: Int = defaultClassSize)
     : State(year, classSize) {
 
     fun generateStudentsForEachKlass() {
-        var supervisorPesel : String? = null
+        var supervisorId: Int? = null
         for (klass in klasses) {
             repeat(classSize) {
-                val student = Student.random(klass.value,supervisorPesel = supervisorPesel)
-                if(supervisorPesel == null)
-                    supervisorPesel = student.pesel
-                students.put(student.pesel, student)
+                val student = Student.random(klass.value, supervisorId = supervisorId)
+                if (supervisorId == null)
+                    supervisorId = student.id
+                students.put(student.id, student)
             }
         }
     }
@@ -37,12 +37,14 @@ class OriginState(year: Int, classSize: Int = defaultClassSize)
      */
     fun generateTeachersWithSubjectRelations() {
         for (subject in subjects) {
-            val teacherSupervisor : String? = null
+            var teacherSupervisor: Int? = null
             repeat(ThreadLocalRandom.current().nextInt(minTeachersPerSubject, maxTeachersPerSubject)) {
-                val teacher = Teacher.random(year,teacherSupervisor,subject)
+                val teacher = Teacher.random(year, teacherSupervisor, subject) // BUG ??
+                if (teacherSupervisor == null)
+                    teacherSupervisor = teacher.id
 
                 subjectTeachers[subject]?.add(teacher)
-                val relation = SubjectTeacherRel(teacher.pesel, subject.id)
+                val relation = SubjectTeacherRel(teacher, subject)
                 subjectTeacherRel += relation
             }
         }
@@ -56,7 +58,7 @@ class OriginState(year: Int, classSize: Int = defaultClassSize)
         for (level in 1..4) {
             for (sign in CharRange('A', 'C')) {
                 val tutor = generateTutorForKlass()
-                val klass = Klass(sign, tutor.pesel, year - level + 1)
+                val klass = Klass(sign, tutor, year - level + 1)
                 klasses.put(klass.id, klass)
             }
         }

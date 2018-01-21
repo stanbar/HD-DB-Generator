@@ -1,12 +1,15 @@
 package generator.data
 
+import generator.State.Companion.calendars
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
 class MyCalendar(val calendar: Calendar) : Insertable {
-
+    init{
+        calendars.add(this)
+    }
     override fun toInsert() = "$id;${dataFormat.format(date)};$year"
     val dataFormat: DateFormat = SimpleDateFormat("yyy-MM-dd")
 

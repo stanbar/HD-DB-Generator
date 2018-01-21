@@ -1,5 +1,1 @@
-UPDATE dbo.Teacher SET Title = 'Profesor' WHERE PESEL = '80010620471'
-UPDATE dbo.Teacher SET Title = 'Magister' WHERE PESEL = '85081201747'
-UPDATE dbo.Teacher SET Title = 'Doktor' WHERE PESEL = '49100963370'
-UPDATE dbo.Teacher SET Title = 'Profesor' WHERE PESEL = '48070105605'
-UPDATE dbo.Teacher SET Title = 'Doktor' WHERE PESEL = '67053083812'
+UPDATE dbo.Teacher SET Title = 'Profesor' WHERE ID = '12'

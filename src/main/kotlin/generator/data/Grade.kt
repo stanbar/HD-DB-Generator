@@ -11,7 +11,7 @@ data class Grade(
         private val subject: Subject,
         private val teacher: Teacher,
         private val student: Student) : Insertable{
-    override fun toInsert(): String = "$id;${date.id};$grade;${subject.id};${teacher.pesel};${student.pesel}"
+    override fun toInsert(): String = "$id;${date.id};$grade;${subject.id};${teacher.id};${student.id}"
 
 
     companion object : Schematable {
@@ -29,8 +29,8 @@ data class Grade(
                 "    Year INTEGER NOT NULL,\n" +
                 "    Grade FLOAT NOT NULL,\n" +
                 "    Subject_ID INTEGER NOT NULL FOREIGN KEY REFERENCES Subject,\n" +
-                "    Teacher_PESEL nvarchar(11) NOT NULL FOREIGN KEY REFERENCES Teacher,\n" +
-                "    Student_PESEL nvarchar(11) NOT NULL FOREIGN KEY REFERENCES Student,\n" +
+                "    Teacher_ID INTEGER NOT NULL FOREIGN KEY REFERENCES Teacher,\n" +
+                "    Student_ID INTEGER NOT NULL FOREIGN KEY REFERENCES Student,\n" +
                 ")"
 
 

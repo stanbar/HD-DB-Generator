@@ -2,11 +2,13 @@ package generator.data.relations
 
 import generator.data.Insertable
 import generator.data.Schematable
+import generator.data.Subject
+import generator.data.Teacher
 import java.util.concurrent.atomic.AtomicInteger
 
-class SubjectTeacherRel(private val teacher_pesel: String,
-                        private val subject_id: Int) : Insertable {
-    override fun toInsert() = "$id;$subject_id;$teacher_pesel"
+class SubjectTeacherRel(private val teacher: Teacher,
+                        private val subject: Subject) : Insertable {
+    override fun toInsert() = "$id;${subject.id};${teacher.id}"
 
     private val id: Int = lastId.getAndIncrement()
 
@@ -18,7 +20,7 @@ class SubjectTeacherRel(private val teacher_pesel: String,
                 "(\n" +
                 "    ID INTEGER IDENTITY(1, 1) PRIMARY KEY,\n" +
                 "    Subject_ID INTEGER NOT NULL FOREIGN KEY REFERENCES Subject,\n" +
-                "    Teacher_PESEL nvarchar(11) NOT NULL FOREIGN KEY REFERENCES Teacher,\n" +
+                "    Teacher_ID INTEGER NOT NULL FOREIGN KEY REFERENCES Teacher,\n" +
                 ")"
     }
 }

@@ -11,7 +11,7 @@ data class Exam(
         private val subject: Subject,
         private val teacher: Teacher) : Insertable {
 
-    override fun toInsert(): String = "$id;$result;${date.id};${student.pesel};${subject.id};${teacher.pesel}"
+    override fun toInsert(): String = "$id;$result;${date.id};${student.id};${subject.id};${teacher.id}"
 
     val id: Int = lastId.getAndIncrement()
 
@@ -36,9 +36,9 @@ data class Exam(
                 "    ID INTEGER IDENTITY(1, 1) PRIMARY KEY,\n" +
                 "    Result FLOAT NOT NULL,\n" +
                 "    Date_ID INTEGER NOT NULL FOREIGN KEY REFERENCES MyCalendar,\n" +
-                "    Student_PESEL nvarchar(11) NOT NULL FOREIGN KEY REFERENCES Student,\n" +
+                "    Student_ID INTEGER NOT NULL FOREIGN KEY REFERENCES Student,\n" +
                 "    Subject_ID INTEGER NOT NULL FOREIGN KEY REFERENCES Subject,\n" +
-                "    Teacher_PESEL nvarchar(11) NOT NULL FOREIGN KEY REFERENCES Teacher,\n" +
+                "    Teacher_ID INTEGER NOT NULL FOREIGN KEY REFERENCES Teacher,\n" +
                 ")"
     }
 }
