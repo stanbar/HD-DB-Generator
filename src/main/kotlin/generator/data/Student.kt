@@ -2,10 +2,12 @@ package generator.data
 
 import generator.RandomDataGenerator
 import generator.random
+import java.util.concurrent.atomic.AtomicInteger
 
 data class Student(val klass: Klass, val pesel: String, val name: String, var surname: String, val supervisorPesel : String) : Insertable {
 
-    override fun toInsert() = "$name;$pesel;$surname;${klass.id}"
+    private val id = lastId.getAndIncrement()
+    override fun toInsert() = "$id;$name;$pesel;$surname;${klass.id};$supervisorPesel"
 
     companion object : Schematable {
 
@@ -14,9 +16,11 @@ data class Student(val klass: Klass, val pesel: String, val name: String, var su
             return Student(klass = klass, pesel = pesel,
                     name = RandomDataGenerator.names.random(), surname = RandomDataGenerator.surnames.random(), supervisorPesel = supervisorPesel ?: pesel) //TODO boss to himself
         }
+        private val lastId = AtomicInteger(0)
         override val tableName: String = "Student"
         override val schema: String = "CREATE TABLE $tableName\n" +
                 "(\n" +
+                //"    ID INTEGER IDENTITY(1,1) NOT NULL, \n" +
                 "    Name nvarchar(40) NOT NULL,\n" +
                 "    PESEL nvarchar(11) PRIMARY KEY,\n" +
                 "    Surname nvarchar(40) NOT NULL,\n" +
