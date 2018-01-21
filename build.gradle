@@ -29,7 +29,7 @@ jar {
     }
 }
 shadowJar {
-    baseName = 'bd-generator'
+    baseName = 'db-generator'
     classifier = null
     version = null
 }
