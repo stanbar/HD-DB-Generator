@@ -102,7 +102,6 @@ fun buildUpdate(state: State) {
         generateStudentsForEachFirstKlass().dump("bulks/${Student.tableName}${state.year}.bulk")
         generateExamsWithStudentRelations().dump("bulks/${Exam.tableName}${state.year}.bulk")
         generateKlassToSubjectRelationsForFirstClasses().dump("bulks/${SubjectKlassRel.tableName}${state.year}.bulk")
-        generateTeacherUpdateExpirience().dump("bulks/${Teacher.tableName}${state.year}.bulk")
         newCalendars().dump("bulks/${MyCalendar.tableName}${state.year}.bulk")
 
     }
@@ -124,6 +123,10 @@ fun updateSlowyChangedVariable(state: State, updateCount: Int = ThreadLocalRando
     val updatedStudents = state.updateRandomStudents(updateCount)
 
     FileWriter("teacherUpdates${state.year}.sql").use { writer ->
+        state.generateTeacherUpdateExpirience().forEachIndexed { index, teacher ->
+            writer.appendln("UPDATE dbo.Teacher SET ExperienceYears = '${teacher.experienceYears}' WHERE ID = '${teacher.id}'")
+        }
+
         updatedTeachers.forEachIndexed { index, teacher ->
             writer.append("UPDATE dbo.Teacher SET Title = '${teacher.title}' WHERE ID = '${teacher.id}'")
             if (shouldPrintNewLine(index, updatedTeachers.size)) writer.append('\n')

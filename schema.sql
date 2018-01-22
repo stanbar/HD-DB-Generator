@@ -45,8 +45,9 @@ CREATE TABLE Student
     Name nvarchar(40) NOT NULL,
     PESEL nvarchar(11),
     Surname nvarchar(40) NOT NULL,
-    Class_ID INTEGER NOT NULL FOREIGN KEY REFERENCES Class
-    supervisor_ID INTEGER NOT NULL FOREIGN KEY REFERENCES Student
+    Class_ID INTEGER NOT NULL FOREIGN KEY REFERENCES Class,
+    supervisor_ID INTEGER NOT NULL FOREIGN KEY REFERENCES Student,
+    gimScore INTEGER NOT NULL
 )
 CREATE TABLE Grade
 (
