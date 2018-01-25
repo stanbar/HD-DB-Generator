@@ -12,13 +12,13 @@ class OriginState(year: Int, classSize: Int = defaultClassSize)
     : State(year, classSize) {
 
     fun generateStudentsForEachKlass() {
-        var supervisorId: Int? = null
+        var supervisor: Student? = null
         for (klass in klasses) {
             repeat(classSize) {
-                val student = Student.random(klass.value, supervisorId = supervisorId)
-                if (supervisorId == null)
-                    supervisorId = student.id
-                students.put(student.id, student)
+                val student = Student.random(klass.value, supervisor= supervisor)
+                if (supervisor== null)
+                    supervisor = student
+                students.put(student.pesel, student)
             }
         }
     }
@@ -38,7 +38,7 @@ class OriginState(year: Int, classSize: Int = defaultClassSize)
      */
     fun generateTeachersWithSubjectRelations() {
         for (subject in subjects) {
-            var teacherSupervisor: Int? = null
+            var teacherSupervisor: Teacher? = null
             repeat(ThreadLocalRandom.current().nextInt(minTeachersPerSubject, maxTeachersPerSubject)) {
 
                 val randomCalendar = RandomDataGenerator.randomCalendar()
@@ -47,7 +47,7 @@ class OriginState(year: Int, classSize: Int = defaultClassSize)
 
                 val teacher = Teacher.random(year, teacherSupervisor, subject, myCalendar) // BUG ??
                 if (teacherSupervisor == null)
-                    teacherSupervisor = teacher.id
+                    teacherSupervisor = teacher
 
                 subjectTeachers[subject]?.add(teacher)
                 val relation = SubjectTeacherRel(teacher, subject)

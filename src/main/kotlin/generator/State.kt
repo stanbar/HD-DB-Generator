@@ -35,34 +35,20 @@ open class State(var year: Int, protected val classSize: Int = defaultClassSize,
 
     protected val klasses = HashMap<Int, Klass>()
     protected val klassSubjects = LinkedList<SubjectKlassRel>()
-    protected val teachers: HashMap<Int, Teacher>
+    protected val teachers: HashMap<String, Teacher>
         get() {
-            val teachers = HashMap<Int, Teacher>()
-            subjectTeachers.forEach { subject, teachersList -> teachersList.forEach { teachers[it.id] = it } }
+            val teachers = HashMap<String, Teacher>()
+            subjectTeachers.forEach { subject, teachersList -> teachersList.forEach { teachers[it.pesel] = it } }
             return teachers
         }
 
     protected val grades = HashMap<Int, Grade>()
-    protected val students = HashMap<Int, Student>()
+    protected val students = HashMap<String, Student>()
 
     protected val exams = HashMap<Int, Exam>()
-    private var myCalendar: MyCalendar
 
     init {
         subjects.forEach { subjectTeachers.put(it, LinkedList()) }
-        val calendar = Calendar.getInstance()
-        calendar.set(Calendar.YEAR, year)
-        myCalendar = MyCalendar(calendar)
-
-        calendars.add(myCalendar)
-    }
-
-    fun generateNewCalendars() {
-        val calendar = Calendar.getInstance()
-        calendar.set(Calendar.YEAR, year)
-        myCalendar = MyCalendar(calendar)
-
-        calendars.add(myCalendar)
     }
 
 
@@ -76,8 +62,6 @@ open class State(var year: Int, protected val classSize: Int = defaultClassSize,
         exams.values.dump("bulks/${Exam.tableName}.bulk")
         subjectTeacherRel.dump("bulks/${SubjectTeacherRel.tableName}.bulk")
         klassSubjects.dump("bulks/${SubjectKlassRel.tableName}.bulk")
-        calendars.dump("bulks/${MyCalendar.tableName}.bulk")
-        dumpedCalendars.addAll(calendars)
     }
 
 
@@ -104,7 +88,7 @@ open class State(var year: Int, protected val classSize: Int = defaultClassSize,
             subjects.forEach { subject ->
                 val teacher = getTeacherFor(subject, student.klass)
 
-                val grade = Grade.random(subject, teacher, student, myCalendar)
+                val grade = Grade.random(subject, teacher, student, year)
                 grades.put(grade.id, grade)
                 updateList.add(grade)
             }
@@ -123,7 +107,7 @@ open class State(var year: Int, protected val classSize: Int = defaultClassSize,
                 val exam = Exam.random(student,
                         subject,
                         teacher,
-                        myCalendar)
+                        year)
                 exams[exam.id] = exam
                 updates += exam
             }
@@ -181,14 +165,14 @@ open class State(var year: Int, protected val classSize: Int = defaultClassSize,
         for (klass in klasses) {
             if (klass.value.currentLevel(year) > 1)
                 continue
-            var supervisorId: Int? = null
+            var supervisor: Student? = null
             repeat(classSize) {
-                val student = Student.random(klass.value, supervisorId)
-                if (supervisorId == null)
-                    supervisorId = student.id
+                val student = Student.random(klass.value, supervisor)
+                if (supervisor == null)
+                    supervisor = student
 
                 //TODO supervisor end null or himself
-                students.put(student.id, student)
+                students.put(student.pesel, student)
                 updatedStudents.add(student)
             }
         }

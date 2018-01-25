@@ -11,16 +11,17 @@ data class Klass(
 
     fun currentLevel(currentYear: Int) = currentYear - originYear + 1
 
-    override fun toInsert() = "$id;$sign;${tutor.id};$originYear"
+    override fun toInsert() = "$id;$sign;${tutor.pesel};$originYear"
 
     companion object : Schematable {
+        override val primaryKey: String = "ID"
         private val lastId = AtomicInteger(1)
         override val tableName: String = "Class"
         override val schema = "CREATE TABLE $tableName\n" +
                 "(\n" +
                 "    ID INTEGER IDENTITY(1, 1) PRIMARY KEY,\n" +
-                "    Sign nvarchar(1) NOT NULL,\n" +
-                "    Tutor_ID INTEGER NOT NULL FOREIGN KEY REFERENCES Teacher,\n" +
+                "    Sign varchar(1) NOT NULL,\n" +
+                "    Tutor_PESEL varchar(11) NOT NULL FOREIGN KEY REFERENCES Teacher,\n" +
                 "    OriginYear INTEGER NOT NULL,\n" +
                 ")"
     }

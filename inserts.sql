@@ -1,6 +1,5 @@
 USE schoolGenerated
 /*
-DELETE FROM MyCalendar
 DELETE FROM Subject
 DELETE FROM Class
 DELETE FROM Teacher
@@ -10,7 +9,6 @@ DELETE FROM Exam
 DELETE FROM SubjectTeacherRel
 DELETE FROM SubjectKlassRel
 */
-BULK INSERT dbo.MyCalendar FROM '/Users/admin1/GoogleDrive/JavaProjects/db-generator/bulks/MyCalendar.bulk' WITH (FIELDTERMINATOR=';', ROWTERMINATOR='|')
 BULK INSERT dbo.Subject FROM '/Users/admin1/GoogleDrive/JavaProjects/db-generator/bulks/Subject.bulk' WITH (FIELDTERMINATOR=';', ROWTERMINATOR='|')
 BULK INSERT dbo.Class FROM '/Users/admin1/GoogleDrive/JavaProjects/db-generator/bulks/Class.bulk' WITH (FIELDTERMINATOR=';', ROWTERMINATOR='|')
 BULK INSERT dbo.Teacher FROM '/Users/admin1/GoogleDrive/JavaProjects/db-generator/bulks/Teacher.bulk' WITH (FIELDTERMINATOR=';', ROWTERMINATOR='|')

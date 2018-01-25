@@ -5,25 +5,26 @@ import java.util.concurrent.atomic.AtomicInteger
 
 data class Exam(
         private val result: Double,
-        private val date: MyCalendar,
+        private val year: Int,
         private val student: Student,
         private val subject: Subject,
         private val teacher: Teacher) : Insertable {
 
-    override fun toInsert(): String = "$id;$result;${date.id};${student.id};${subject.id};${teacher.id}"
+    override fun toInsert(): String = "$id;$result;$year;${student.pesel};${subject.id};${teacher.pesel}"
 
     val id: Int = lastId.getAndIncrement()
 
     companion object : Schematable {
+        override val primaryKey: String = "ID"
         override val tableName: String = "Exam"
         private val lastId = AtomicInteger(1)
 
-        fun random(student: Student, subject: Subject, teacher: Teacher,  calendar : MyCalendar): Exam {
+        fun random(student: Student, subject: Subject, teacher: Teacher,  year : Int): Exam {
 
 
             return Exam(
                     result = ThreadLocalRandom.current().nextDouble(0.0, 100.0),
-                    date = calendar,
+                    year = year,
                     student = student,
                     subject = subject,
                     teacher = teacher)
@@ -33,10 +34,10 @@ data class Exam(
                 "(\n" +
                 "    ID INTEGER IDENTITY(1, 1) PRIMARY KEY,\n" +
                 "    Result FLOAT NOT NULL,\n" +
-                "    Date_ID INTEGER NOT NULL FOREIGN KEY REFERENCES MyCalendar,\n" +
-                "    Student_ID INTEGER NOT NULL FOREIGN KEY REFERENCES Student,\n" +
+                "    Year INTEGER NOT NULL,\n" +
+                "    Student_PESEL varchar(11) NOT NULL FOREIGN KEY REFERENCES Student,\n" +
                 "    Subject_ID INTEGER NOT NULL FOREIGN KEY REFERENCES Subject,\n" +
-                "    Teacher_ID INTEGER NOT NULL FOREIGN KEY REFERENCES Teacher,\n" +
+                "    Teacher_PESEL varchar(11) NOT NULL FOREIGN KEY REFERENCES Teacher,\n" +
                 ")"
     }
 }
