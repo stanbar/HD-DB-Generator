@@ -32,13 +32,13 @@ data class Teacher(
         override val tableName: String = "Teacher"
         override val schema: String = "CREATE TABLE $tableName\n" +
                 "(\n" +
-                "    PESEL varchar(11) NOT NULL PRIMARY KEY,\n" +
+                "    PESEL varchar(100) NOT NULL PRIMARY KEY,\n" +
                 "    Name varchar(100) NOT NULL,\n" +
                 "    Surname varchar(100) NOT NULL,\n" +
                 "    Title varchar(100) NOT NULL,\n" +
                 "    StartWorkingDate_Year INTEGER NOT NULL,\n" +
                 "    ExperienceYears INTEGER NOT NULL,\n" +
-                "    Supervisor_PESEL varchar(11) NOT NULL FOREIGN KEY REFERENCES Teacher,\n" +
+                "    Supervisor_PESEL varchar(100) NOT NULL FOREIGN KEY REFERENCES Teacher,\n" +
                 "    Subject_ID INTEGER NOT NULL FOREIGN KEY REFERENCES Subject,\n" +
                 ")"
 

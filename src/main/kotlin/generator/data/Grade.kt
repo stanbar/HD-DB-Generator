@@ -26,8 +26,8 @@ data class Grade(
                 "    Year INTEGER NOT NULL,\n" +
                 "    Grade FLOAT NOT NULL,\n" +
                 "    Subject_ID INTEGER NOT NULL FOREIGN KEY REFERENCES Subject,\n" +
-                "    Teacher_PESEL varchar(11) NOT NULL FOREIGN KEY REFERENCES Teacher,\n" +
-                "    Student_PESEL varchar(11) NOT NULL FOREIGN KEY REFERENCES Student,\n" +
+                "    Teacher_PESEL varchar(100) NOT NULL FOREIGN KEY REFERENCES Teacher,\n" +
+                "    Student_PESEL varchar(100) NOT NULL FOREIGN KEY REFERENCES Student,\n" +
                 ")"
 
 

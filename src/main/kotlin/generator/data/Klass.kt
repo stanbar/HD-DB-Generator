@@ -21,7 +21,7 @@ data class Klass(
                 "(\n" +
                 "    ID INTEGER IDENTITY(1, 1) PRIMARY KEY,\n" +
                 "    Sign varchar(1) NOT NULL,\n" +
-                "    Tutor_PESEL varchar(11) NOT NULL FOREIGN KEY REFERENCES Teacher,\n" +
+                "    Tutor_PESEL varchar(100) NOT NULL FOREIGN KEY REFERENCES Teacher,\n" +
                 "    OriginYear INTEGER NOT NULL,\n" +
                 ")"
     }

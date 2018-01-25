@@ -19,7 +19,7 @@ data class SubjectKlassRel(val subject: Subject,
                 "    ID INTEGER IDENTITY(1, 1) PRIMARY KEY,\n" +
                 "    Subject_ID INTEGER NOT NULL FOREIGN KEY REFERENCES Subject,\n" +
                 "    Class_ID INTEGER NOT NULL FOREIGN KEY REFERENCES Class,\n" +
-                "    Teacher_PESEL varchar(11) NOT NULL FOREIGN KEY REFERENCES Teacher,\n" +
+                "    Teacher_PESEL varchar(100) NOT NULL FOREIGN KEY REFERENCES Teacher,\n" +
                 ")"
         private val lastId = AtomicInteger(1)
     }

@@ -35,9 +35,9 @@ data class Exam(
                 "    ID INTEGER IDENTITY(1, 1) PRIMARY KEY,\n" +
                 "    Result FLOAT NOT NULL,\n" +
                 "    Year INTEGER NOT NULL,\n" +
-                "    Student_PESEL varchar(11) NOT NULL FOREIGN KEY REFERENCES Student,\n" +
+                "    Student_PESEL varchar(100) NOT NULL FOREIGN KEY REFERENCES Student,\n" +
                 "    Subject_ID INTEGER NOT NULL FOREIGN KEY REFERENCES Subject,\n" +
-                "    Teacher_PESEL varchar(11) NOT NULL FOREIGN KEY REFERENCES Teacher,\n" +
+                "    Teacher_PESEL varchar(100) NOT NULL FOREIGN KEY REFERENCES Teacher,\n" +
                 ")"
     }
 }
