@@ -5,7 +5,6 @@ import java.util.concurrent.ThreadLocalRandom
 
 
 fun Array<String>.random() = this[ThreadLocalRandom.current().nextInt(size)].capitalize()
-fun Date.random(from: Date, to: Date) = Date(ThreadLocalRandom.current().nextLong(from.time, to.time))
 
 object RandomDataGenerator {
 
@@ -47,6 +46,13 @@ object RandomDataGenerator {
 
     var titles = arrayOf("Technik", "Licencjat", "Inżynier", "Magister", "Doktor", "Profesor")
 
+    fun randomGrade() = ThreadLocalRandom.current().nextDouble(2.0, 6.0)
+
+    fun nextTitle(title: String) = titles.getOrNull(titles.indexOf(title) + 1) ?: title
+
+    fun randomClassSize() = ThreadLocalRandom.current().nextInt(defaultClassSize - 10, defaultClassSize + 11)
+
+    fun randomMonth() = ThreadLocalRandom.current().nextInt(1, 13)
 
 
     fun randomPesel(): String {
@@ -69,21 +75,19 @@ object RandomDataGenerator {
         return sb.toString()
     }
 
-    fun randomGrade() = ThreadLocalRandom.current().nextDouble(2.0, 6.0)
-
-    fun nextTitle(title: String) = titles.getOrNull(titles.indexOf(title) + 1) ?: title
 
     fun randomCalendar(): Calendar {
         val randomYear = ThreadLocalRandom.current().nextInt(1990, 2012)
         val randomMonth = ThreadLocalRandom.current().nextInt(1, 12)
         val randomDay = ThreadLocalRandom.current().nextInt(1, 28)
 
-        val cal :java.util.Calendar = java.util.Calendar.getInstance()
+        val cal: java.util.Calendar = java.util.Calendar.getInstance()
         cal.set(java.util.Calendar.YEAR, randomYear)
         cal.set(java.util.Calendar.MONDAY, randomMonth)
-        cal.set(java.util.Calendar.DAY_OF_MONTH,randomDay)
+        cal.set(java.util.Calendar.DAY_OF_MONTH, randomDay)
         return cal
     }
+
 
 
 }

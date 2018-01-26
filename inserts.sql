@@ -1,4 +1,4 @@
-USE schoolGenerated
+USE szkolaGenerated
 /*
 DELETE FROM Subject
 DELETE FROM Class

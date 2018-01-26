@@ -9,12 +9,14 @@ import java.util.concurrent.ThreadLocalRandom
 import kotlin.reflect.full.companionObjectInstance
 
 val defaultClassSize = 30
-val defaultMaxTeachers = 5
-val defaultMinTeachers = 3
+val classesRange = CharRange('A', 'D')
+val defaultMaxTeachers = 10
+val defaultMinTeachers = 6
+val originYear = 2014
 
 var bulksDir = File(System.getProperty("user.dir"), "bulks")
 
-val dbName = "schoolGenerated"
+val dbName = "szkolaGenerated"
 val FIELD_TERMINATOR = ";"
 val ROW_TERMINATOR = "|"
 val BULK_OPTIONS = "(FIELDTERMINATOR='$FIELD_TERMINATOR', ROWTERMINATOR='$ROW_TERMINATOR')"
@@ -22,7 +24,7 @@ val BULK_OPTIONS = "(FIELDTERMINATOR='$FIELD_TERMINATOR', ROWTERMINATOR='$ROW_TE
 fun main(args: Array<String>) {
     bulksDir.mkdirs()
 
-    val originState = buildOriginState(2014)
+    val originState = buildOriginState(originYear)
     buildUpdate(originState) // 2015
     buildUpdate(originState) // 2016
     buildUpdate(originState) // 2017

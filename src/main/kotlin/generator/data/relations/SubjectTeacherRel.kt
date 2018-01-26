@@ -13,7 +13,6 @@ class SubjectTeacherRel(private val teacher: Teacher,
     private val id: Int = lastId.getAndIncrement()
 
     companion object : Schematable {
-
         override val primaryKey: String = "ID"
         override val tableName: String = "SubjectTeacherRel"
         private val lastId = AtomicInteger(1)

@@ -8,7 +8,7 @@ import generator.data.relations.SubjectKlassRel
 import generator.data.relations.SubjectTeacherRel
 import java.util.concurrent.ThreadLocalRandom
 
-class OriginState(year: Int, classSize: Int = defaultClassSize)
+class OriginState(year: Int, classSize: Int = RandomDataGenerator.randomClassSize())
     : State(year, classSize) {
 
     fun generateStudentsForEachKlass() {
@@ -45,7 +45,7 @@ class OriginState(year: Int, classSize: Int = defaultClassSize)
                 val myCalendar = MyCalendar(randomCalendar)
                 calendars.add(myCalendar)
 
-                val teacher = Teacher.random(year, teacherSupervisor, subject, myCalendar) // BUG ??
+                val teacher = Teacher.random(year, teacherSupervisor, subject, myCalendar)
                 if (teacherSupervisor == null)
                     teacherSupervisor = teacher
 
@@ -62,7 +62,7 @@ class OriginState(year: Int, classSize: Int = defaultClassSize)
      */
     fun generateClassesWithSubjectRelations() {
         for (level in 1..4) {
-            for (sign in CharRange('A', 'C')) {
+            for (sign in classesRange){
                 val tutor = generateTutorForKlass()
                 val klass = Klass(sign, tutor, year - level + 1)
                 klasses.put(klass.id, klass)

@@ -22,7 +22,7 @@ fun Collection<Insertable>.dump(fileName: String) {
 open class State(var year: Int, protected val classSize: Int = defaultClassSize, protected val maxTeachersPerSubject: Int = defaultMaxTeachers, protected val minTeachersPerSubject: Int = defaultMinTeachers) {
 
     protected val subjects = arrayListOf(Subject("J. Polski"), Subject("Matematyka"), Subject("Biologia")
-            , Subject("Chemia"), Subject("Informatyka"), Subject("J. Angielski"), Subject("Fizyka"))
+            , Subject("Chemia"), Subject("Informatyka"), Subject("J. Angielski"), Subject("Fizyka"), Subject("J. Niemiecki"))
 
     companion object {
         var dumpedCalendars = HashSet<MyCalendar>()
@@ -86,11 +86,20 @@ open class State(var year: Int, protected val classSize: Int = defaultClassSize,
             if (klasses[student.klass.id]!!.currentLevel(year) > 4)
                 return@forEach
             subjects.forEach { subject ->
-                val teacher = getTeacherFor(subject, student.klass)
+                repeat(12) { month ->
+                    val teacher = getTeacherFor(subject, student.klass)
+                    val grade = Grade(
+                            year = year,
+                            month = month + 1,
+                            grade = RandomDataGenerator.randomGrade(),
+                            subject = subject,
+                            teacher = teacher,
+                            student = student)
 
-                val grade = Grade.random(subject, teacher, student, year)
-                grades.put(grade.id, grade)
-                updateList.add(grade)
+                    grades.put(grade.id, grade)
+                    updateList.add(grade)
+                }
+
             }
         }
         return updateList
@@ -118,7 +127,7 @@ open class State(var year: Int, protected val classSize: Int = defaultClassSize,
 
     fun generateFirstClasses(): List<Klass> {
         val updateList = ArrayList<Klass>()
-        for (sign in CharRange('A', 'C')) {
+        for (sign in classesRange) {
             val tutor = generateTutorForKlass()
             val klass = Klass(sign, tutor, year)
             klasses.put(klass.id, klass)
@@ -171,7 +180,6 @@ open class State(var year: Int, protected val classSize: Int = defaultClassSize,
                 if (supervisor == null)
                     supervisor = student
 
-                //TODO supervisor end null or himself
                 students.put(student.pesel, student)
                 updatedStudents.add(student)
             }
